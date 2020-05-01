@@ -14,8 +14,7 @@ public class DeathSwap extends JavaPlugin
     	getServer().getPluginManager().registerEvents(new DeathSwapListener(this), this);
     	
     	//Register Commands
-    	getCommand("startsession").setExecutor(new CommandStartSession(this));
-    	getCommand("joinsession").setExecutor(new CommandJoinSession(this));
+    	getCommand("deathswap").setExecutor(new CommandDeathSwap(this));
     }
     
     @Override
