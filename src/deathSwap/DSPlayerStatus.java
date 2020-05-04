@@ -2,14 +2,16 @@ package deathSwap;
 
 import org.bukkit.entity.Player;
 
-public class PlayerStatus 
+public class DSPlayerStatus 
 {
 	public Player Player;
 	public boolean IsReady;
+	public boolean IsAlive;
 	
-	public PlayerStatus (Player player, boolean isReady)
+	public DSPlayerStatus (Player player, boolean isReady, boolean isAlive)
 	{
 		Player = player;
 		IsReady = isReady;
+		IsAlive = isAlive;
 	}
 }
