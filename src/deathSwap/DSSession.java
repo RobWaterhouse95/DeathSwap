@@ -16,31 +16,28 @@ public class DSSession
 	public DSSession(Plugin plugin) 
 	{        
 		_plugin = plugin;
-		
-        _plugin.getLogger().log(Level.INFO, "Generating DeathSwapSession");
 		_players = new ArrayList<DSPlayerStatus>();
 	}
 	
 	public void BroadcastToPlayers(String s)
     {
-    	for (DSPlayerStatus playerStatus : _players){
-    		playerStatus.Player.sendMessage("[DeathSwap] " + s);
-    	}
+    	for (DSPlayerStatus ps : GetPlayers())
+    		ps.Player.sendMessage("[DeathSwap] " + s);
     }
-	
-	public boolean IsMatchRunning()
-	{
-		if(_match == null || _match.isCancelled())
-		{
-			return false;
-		}
-		
-		return true;
-	}
+    
+    public void BroadcastMatchReadyStatus()
+    {    	
+    	BroadcastToPlayers(GetReadyPlayers().size() + "/" + GetPlayers().size() + " players ready.");
+    }
+    
+    public void BroadcastMatchAliveStatus()
+    {    	
+    	BroadcastToPlayers(GetAlivePlayers().size() + "/" + GetPlayers().size() + " players alive.");
+    }
 	
 	public void JoinDeathSwapSession(Player player)
     {
-		for (DSPlayerStatus ps : _players)
+		for (DSPlayerStatus ps : GetPlayers())
 		{
 			if(ps.Player == player)
 			{
@@ -57,7 +54,7 @@ public class DSSession
     {
     	boolean playerFound = false;
     	
-    	for (DSPlayerStatus ps : _players)
+    	for (DSPlayerStatus ps : GetPlayers())
 		{
 			if(ps.Player == player)
 			{
@@ -88,7 +85,7 @@ public class DSSession
     {
     	List<DSPlayerStatus> alivePlayers = new ArrayList<DSPlayerStatus>();
     	
-    	for (DSPlayerStatus ps : _players)
+    	for (DSPlayerStatus ps : GetPlayers())
     	{
     		if (ps.IsAlive)
     		{
@@ -99,20 +96,60 @@ public class DSSession
     	return alivePlayers;
     }
     
-    public void DestroyMatch()
+    public List<DSPlayerStatus> GetReadyPlayers()
     {
+    	List<DSPlayerStatus> readyPlayers = new ArrayList<DSPlayerStatus>();
+    	
+    	for (DSPlayerStatus ps : GetPlayers())
+    	{
+    		if (ps.IsReady)
+    		{
+    			readyPlayers.add(ps);
+    		}
+    	}
+    	
+    	return readyPlayers;
+    }
+	
+	public boolean IsMatchRunning()
+	{
+		if(_match == null || _match.isCancelled())
+		{
+			return false;
+		}
+		
+		return true;
+	}
+    
+    public void DestroySession()
+    {
+    	BroadcastToPlayers("Destroying session");
     	_match.StopRunning();
     	_match = null;
+    	_players = new ArrayList<DSPlayerStatus>();
     }
     
-    private boolean CheckAllPlayersReady()
+    public boolean CheckGameComplete()
     {
-    	if(_players.size() < 2)
+    	List<DSPlayerStatus> alivePlayers = GetAlivePlayers();    	
+    	if(alivePlayers.size() == 1)
+    	{
+    		BroadcastToPlayers(alivePlayers.get(0).Player.getDisplayName() + " is the winner!");
+    		DestroySession();
+    		return true;
+    	}
+    	
+    	return false;
+    }
+    
+    public boolean CheckAllPlayersReady()
+    {
+    	if(GetPlayers().size() < 2)
     	{
     		return false;
     	}
     	
-    	for (DSPlayerStatus ps : _players)
+    	for (DSPlayerStatus ps : GetPlayers())
 		{
 			if(ps.IsReady == false)
 			{
@@ -121,65 +158,5 @@ public class DSSession
 		}
     	
     	return true;
-    }
-    
-    public boolean CheckGameComplete()
-    {
-    	List<DSPlayerStatus> alivePlayers = new ArrayList<DSPlayerStatus>();
-    	
-    	for (DSPlayerStatus ps : _players)
-    	{
-    		if(ps.IsAlive)
-    		{
-    			alivePlayers.add(ps);
-    		}
-    	}
-    	
-    	if(alivePlayers.size() == 1)
-    	{
-    		BroadcastToPlayers(alivePlayers.get(0).Player.getDisplayName() + " is the winner!");
-    		DestroyMatch();
-    		DestroySession();
-    		return true;
-    	}
-    	
-    	return false;
-    }
-    
-    private void DestroySession()
-    {
-    	_players = new ArrayList<DSPlayerStatus>();
-    }
-    
-    public void BroadcastMatchReadyStatus()
-    {
-    	int totalPlayers = 0;
-    	int readyCount = 0;
-    	for (DSPlayerStatus ps : _players)
-		{
-			totalPlayers++;
-			if(ps.IsReady)
-			{
-				readyCount++;
-			}
-		}
-    	
-    	BroadcastToPlayers(readyCount + "/" + totalPlayers + " players ready");
-    }
-    
-    public void BroadcastMatchAliveStatus()
-    {
-    	int totalPlayers = 0;
-    	int aliveCount = 0;
-    	for (DSPlayerStatus ps : _players)
-		{
-			totalPlayers++;
-			if(ps.IsAlive)
-			{
-				aliveCount++;
-			}
-		}
-    	
-    	BroadcastToPlayers(aliveCount + "/" + totalPlayers + " players alive.");
     }
 }

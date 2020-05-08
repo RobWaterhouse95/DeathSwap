@@ -2,7 +2,10 @@ package deathSwap;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -10,14 +13,19 @@ public class DSMatch extends BukkitRunnable
 {
 	private Plugin _plugin;
 	private DSSession _session;
+	private World _world;
 	private boolean _isRunning;
-	private int swapTime = 20;
+	private int swapTime = 180;
 	private int secondsUntilNextSwap;
 
     public DSMatch(Plugin plugin, DSSession session) 
     {
         _plugin = plugin;
 		_session = session;
+		
+		_world = DSWorldGenerator.GenerateWorld();
+		
+		TeleportPlayersToArena();
 		
 		_isRunning = true;
 		secondsUntilNextSwap = swapTime;
@@ -53,6 +61,11 @@ public class DSMatch extends BukkitRunnable
     
     public void StopRunning()
     {
+    	for (DSPlayerStatus ps : _session.GetPlayers())
+    	{
+    		ps.Player.teleport((Bukkit.getServer().getWorld("world").getSpawnLocation()));
+    		ps.Player.setGameMode(GameMode.SURVIVAL);
+    	}
     	_isRunning = false;
     }
     
@@ -73,4 +86,12 @@ public class DSMatch extends BukkitRunnable
 			}
 		}
 	}
+    
+    private void TeleportPlayersToArena()
+    {
+    	for (DSPlayerStatus ps : _session.GetPlayers())
+    	{
+    		ps.Player.teleport(_world.getSpawnLocation());
+    	}
+    }
 }

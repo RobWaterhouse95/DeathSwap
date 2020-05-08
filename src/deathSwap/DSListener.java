@@ -2,6 +2,7 @@ package deathSwap;
 
 import java.util.List;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -38,6 +39,7 @@ public class DSListener implements Listener
 			if(ps.Player == player)
 			{
 				ps.IsAlive = false;
+				ps.Player.setGameMode(GameMode.SPECTATOR);
 				if(!_plugin.DeathSwapSession.CheckGameComplete())
 				{
 					_plugin.DeathSwapSession.BroadcastMatchAliveStatus();
