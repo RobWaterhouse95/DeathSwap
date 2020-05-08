@@ -18,33 +18,33 @@ public class DSMatch extends BukkitRunnable
 	private int swapTime = 180;
 	private int secondsUntilNextSwap;
 
-    public DSMatch(Plugin plugin, DSSession session) 
-    {
-        _plugin = plugin;
+	public DSMatch(Plugin plugin, DSSession session) 
+	{
+		_plugin = plugin;
 		_session = session;
-		
+
 		_world = DSWorldGenerator.GenerateWorld();
-		
+
 		TeleportPlayersToArena();
-		
+
 		_isRunning = true;
 		secondsUntilNextSwap = swapTime;
-		
-		this.runTaskTimer(_plugin, 0l, 20l);
-    }
 
-    @Override
-    public void run() 
-    {
-    	if(_isRunning)
+		this.runTaskTimer(_plugin, 0l, 20l);
+	}
+
+	@Override
+	public void run() 
+	{
+		if(_isRunning)
 		{
 			secondsUntilNextSwap--;
-			
+
 			if(secondsUntilNextSwap == 0)
 			{
 				_session.BroadcastToPlayers("Swapping!");
 				secondsUntilNextSwap = swapTime;
-				
+
 				swapPlayers();
 
 			}			
@@ -57,23 +57,23 @@ public class DSMatch extends BukkitRunnable
 		{
 			this.cancel();
 		}
-    }
-    
-    public void StopRunning()
-    {
-    	for (DSPlayerStatus ps : _session.GetPlayers())
-    	{
-    		ps.Player.teleport((Bukkit.getServer().getWorld("world").getSpawnLocation()));
-    		ps.Player.setGameMode(GameMode.SURVIVAL);
-    	}
-    	_isRunning = false;
-    }
-    
-    private void swapPlayers()
+	}
+
+	public void StopRunning()
+	{
+		for (DSPlayerStatus ps : _session.GetPlayers())
+		{
+			ps.Player.teleport((Bukkit.getServer().getWorld("world").getSpawnLocation()));
+			ps.Player.setGameMode(GameMode.SURVIVAL);
+		}
+		_isRunning = false;
+	}
+
+	private void swapPlayers()
 	{		
 		List<DSPlayerStatus> alivePlayers =  _session.GetAlivePlayers();
 		Location firstLocation = alivePlayers.get(0).Player.getLocation();
-		
+
 		for (int i = 0; i < alivePlayers.size(); i++)
 		{
 			if(i != alivePlayers.size() - 1)
@@ -86,12 +86,12 @@ public class DSMatch extends BukkitRunnable
 			}
 		}
 	}
-    
-    private void TeleportPlayersToArena()
-    {
-    	for (DSPlayerStatus ps : _session.GetPlayers())
-    	{
-    		ps.Player.teleport(_world.getSpawnLocation());
-    	}
-    }
+
+	private void TeleportPlayersToArena()
+	{
+		for (DSPlayerStatus ps : _session.GetPlayers())
+		{
+			ps.Player.teleport(_world.getSpawnLocation());
+		}
+	}
 }

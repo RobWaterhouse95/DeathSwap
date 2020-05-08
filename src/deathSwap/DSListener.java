@@ -13,7 +13,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 public class DSListener implements Listener
 {
 	private DeathSwap _plugin;
-	
+
 	public DSListener(DeathSwap plugin) {
 		_plugin = plugin;
 	}
@@ -30,10 +30,10 @@ public class DSListener implements Listener
 		{
 			return;
 		}
-		
+
 		Player player = (Player) entity;		
 		List<DSPlayerStatus> alivePlayers = _plugin.DeathSwapSession.GetAlivePlayers();
-		
+
 		for (DSPlayerStatus ps : alivePlayers)
 		{
 			if(ps.Player == player)
