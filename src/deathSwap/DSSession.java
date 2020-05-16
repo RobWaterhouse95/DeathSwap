@@ -125,7 +125,6 @@ public class DSSession
 	{
 		BroadcastToPlayers("Destroying session");
 		_match.StopRunning();
-		_match = null;
 		_players = new ArrayList<DSPlayerStatus>();
 	}
 

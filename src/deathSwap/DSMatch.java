@@ -78,7 +78,7 @@ public class DSMatch extends BukkitRunnable
 		{
 			if(i != alivePlayers.size() - 1)
 			{
-				alivePlayers.get(i).Player.teleport( alivePlayers.get(i + 1).Player.getLocation());
+				alivePlayers.get(i).Player.teleport(alivePlayers.get(i + 1).Player.getLocation());
 			}
 			else
 			{
